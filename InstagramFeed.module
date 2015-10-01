@@ -38,7 +38,7 @@ class InstagramFeed extends WireData implements Module, ConfigurableModule {
   public static function getModuleInfo() {
     return array(
       'title' => 'Instagram Feed',
-      'summary' => 'Represents the instagram feed of any user',
+      'summary' => 'Represents the instagram feed of a user',
       'version' => 001,
       'href' => 'https://github.com/justonestep/processwire-instagramfeed '
     );
