@@ -1,6 +1,6 @@
 # Instagram Feed
 
-Represents the instagram feed of any user.
+Represents the instagram feed of a user.
 
 
 ## Instructions
@@ -95,7 +95,7 @@ For example:
 
 You can output any value explained [here](https://instagram.com/developer/endpoints/users/#get_users_media_recent).
 
-If you want to output another feed, you can pass a username:
+If you want to output another feed, you can pass an username:
 
 * ``$modules->get('InstagramFeed')->getRecentMedia('username');`` 
 
