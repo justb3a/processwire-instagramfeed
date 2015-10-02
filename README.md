@@ -77,7 +77,7 @@ For example:
 ```html
 {% set feed = modules.get('InstagramFeed').getRecentMedia() %}
 
-<div class="instagram>
+<div class="instagram">
   {% for image in feed %}
     <a href="{{image.link}}">
       <picture>
