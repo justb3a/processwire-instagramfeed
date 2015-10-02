@@ -57,7 +57,7 @@ For example:
 
 <?php $feed = $modules->get('InstagramFeed')->getRecentMedia(); ?>
 
-<div class="instagram>
+<div class="instagram">
   <?php foreach ($feed as $image): ?>
     <a href="<?=$image['link']; ?>" class="instagram-item">
       <picture>
@@ -77,7 +77,7 @@ For example:
 ```html
 {% set feed = modules.get('InstagramFeed').getRecentMedia() %}
 
-<div class="instagram>
+<div class="instagram">
   {% for image in feed %}
     <a href="{{image.link}}">
       <picture>
