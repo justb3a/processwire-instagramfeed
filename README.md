@@ -1,6 +1,6 @@
 # Instagram Feed
 
-Represents the instagram feed of a user.
+Represents the instagram feed of an user.
 
 
 ## Instructions
@@ -46,6 +46,11 @@ You can specify some more settings:
 
 * **Username**: Instagram username to display content from (default: self)
 * **Image Count**: Count of media to return
+* **Cache Expire**: By default a cache lasts for one day, you could select another lifetime
+	 * 	... **hourly**, **daily**, **weekly**, **monthly**
+	 * 	... **never** to prevent expiration
+	 * 	... **save** to expire when any page or template is saved
+	 * by clicking the link below all module caches will be deleted
 
 ### ... and use it!
 
