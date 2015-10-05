@@ -133,7 +133,7 @@ EOD;
 
     $field = $modules->get('InputfieldSelect');
     $field->label = 'Cache expires';
-    $field->description = __('By default a cache lasts for one day. You could select another lifetime.');
+    $field->description = __('By default a cache lasts for one day but you can select another lifetime.');
     $field->attr('name', 'cacheExpire');
     $field->attr('value', $data['cacheExpire']);
     $field->columnWidth = 100;
