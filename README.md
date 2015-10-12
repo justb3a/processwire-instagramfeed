@@ -13,6 +13,11 @@ Enter a name, description and (really important) the correct redirect url. You c
 
 ![Register your app on Instagram](https://github.com/justonestep/processwire-instagramfeed/blob/master/screens/instagram-register.png)
 
+**Security**
+
+- [x] Disable implicit OAuth
+- [ ] Enforce signed requests
+
 When you've done you'll receive a Client ID and a Client Secret. 
 
 ![Receive Client ID and Secret](https://github.com/justonestep/processwire-instagramfeed/blob/master/screens/instagram-show.png)
@@ -52,6 +57,12 @@ You can specify some more settings:
 	 * 	... **save**, to expire when any page or template is saved
 	 * by clicking the link below all module caches will be deleted
 
+---
+
+**NOTICE**: If you save the module config data, the module cache will be cleared as well.
+
+---
+
 ### ... and use it!
 
 For example:
@@ -62,16 +73,20 @@ For example:
 
 <?php $feed = $modules->get('InstagramFeed')->getRecentMedia(); ?>
 
-<div class="instagram">
-  <?php foreach ($feed as $image): ?>
-    <a href="<?=$image['link']; ?>" class="instagram-item">
-      <picture>
-        <source media="(min-width: 55rem)" srcset="<?=$image['images']['standard_resolution']['url']; ?>">
-        <source media="(min-width: 45rem)" srcset="<?=$image['images']['low_resolution']['url']; ?>">
-        <source srcset="<?=$image['images']['thumbnail']['url']; ?>">
-        <img src="<?=$image['images']['thumbnail']['url']; ?>" alt="">
-      </picture>
-    </a>
+<div class="instagram>
+  <?php foreach ($feed as $media): ?>
+    <?php if ($media['type'] === 'image): ?>
+      <a href="<?=$media['link']; ?>" class="instagram-item">
+        <picture>
+          <source media="(min-width: 55rem)" srcset="<?=$media['images']['standard_resolution']['url']; ?>">
+          <source media="(min-width: 45rem)" srcset="<?=$media['images']['low_resolution']['url']; ?>">
+          <source srcset="<?=$media['images']['thumbnail']['url']; ?>">
+          <img src="<?=$media['images']['thumbnail']['url']; ?>" alt="">
+        </picture>
+      </a>
+    <?php else: ?>
+      // output video  
+    <?php endif; ?>
   <?php endforeach; ?>
 </div>
 
@@ -82,16 +97,20 @@ For example:
 ```html
 {% set feed = modules.get('InstagramFeed').getRecentMedia() %}
 
-<div class="instagram">
-  {% for image in feed %}
-    <a href="{{image.link}}">
-      <picture>
-        <source media="(min-width: 55rem)" srcset="{{image.images.standard_resolution.url}}">
-        <source media="(min-width: 45rem)" srcset="{{image.images.low_resolution.url}}">
-        <source srcset="{{image.images.thumbnail.url}}">
-        <img src="{{image.images.thumbnail.url}}" alt="">
-      </picture>
-    </a>
+<div class="instagram>
+  {% for media in feed %}
+    {% if media.type == 'image' %}
+      <a href="{{media.link}}">
+        <picture>
+          <source media="(min-width: 55rem)" srcset="{{media.images.standard_resolution.url}}">
+          <source media="(min-width: 45rem)" srcset="{{media.images.low_resolution.url}}">
+          <source srcset="{{media.images.thumbnail.url}}">
+          <img src="{{media.images.thumbnail.url}}" alt="">
+        </picture>
+      </a>
+    {% else %}
+      {# output video #}
+    {% endif %}
   {% endfor %}
 </div>
 ```
