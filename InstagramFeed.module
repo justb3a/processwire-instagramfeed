@@ -10,7 +10,7 @@
  *
  *
  * @author Tabea David <info@justonestep.de>
- * @version 0.0.2
+ * @version 0.0.3
  * @copyright Copyright (c) 2015 KF Interactive, www.kf-interactive.com, <info@kf-interactive.com>
  * @see https://github.com/justonestep/processwire-instagramfeed
  * @see http://www.processwire.com
@@ -39,8 +39,11 @@ class InstagramFeed extends WireData implements Module, ConfigurableModule {
     return array(
       'title' => 'Instagram Feed',
       'summary' => 'Represents the instagram feed of an user',
-      'version' => 002,
-      'href' => 'https://github.com/justonestep/processwire-instagramfeed '
+      'version' => 003,
+      'href' => 'https://github.com/justonestep/processwire-instagramfeed',
+      'singular' => true,
+      'autoload' => true,
+      'icon' => 'instagram'
     );
   }
 
@@ -138,7 +141,7 @@ EOD;
     $field->attr('value', $data['cacheExpire']);
     $field->columnWidth = 100;
     $field->required = 1;
-    $lifetimes = array('never', 'save', 'hourly', 'daily', 'weekly', 'monthly');
+    $lifetimes = array('never', 'save', 'now', 'hourly', 'daily', 'weekly', 'monthly');
     foreach($lifetimes as $lifetime) {
       $field->addOption($lifetime, $lifetime);
     }
@@ -151,6 +154,33 @@ EOD;
     $fields->append($help);
 
     return $fields;
+  }
+
+ /**
+   * Initialize the module
+   * Initialize a new web contact form
+   *
+   * Implementation of the Module interface
+   *
+   * ProcessWire calls this when the module is loaded. For 'autoload' modules, this will be called
+   * when ProcessWire's API is ready. As a result, this is a good place to attach hooks.
+   *
+   * @see http://processwire.com/apigen/class-Module.html
+   *
+   * @param Template $template Template object holding the form's fields.
+   *
+   */
+  public function init() {
+    $this->addHookAfter('Modules::saveModuleConfigData', $this, 'clearModuleCache');
+  }
+
+  /**
+   * Hook
+   *
+   * @param HookEvent $event
+   */
+  public function clearModuleCache($event) {
+    $this->clearCacheNow();
   }
 
   /**
@@ -166,7 +196,7 @@ EOD;
     if (!empty($username)) $this->username = $username;
     $json = $this->cache->get($this->getCacheKey('recentmedia', $this->username));
 
-    if (!$json) {
+    if (!$json || $this->cacheExpire === 'never') {
       $connection = new WireHttp;
 
       $request = array(
@@ -208,7 +238,7 @@ EOD;
     $data = $connection->getJson(self::API_URL_SEARCH, true, $request);
 
     $userId = null;
-    if (!empty($data) && $data['meta']['code'] === 200) {
+    if (!empty($data) && $data['meta']['code'] === 200 && isset($data['data'][0])) {
       $userId = $data['data'][0]['id'];
     } else {
       $this->log->save('errors', "[InstagramFeed]: No user '$username' was found.");
@@ -317,14 +347,21 @@ EOD;
       $link = "<a href='$href'>" . __('clear module cache') . "</a>";
 
       if ($this->input->get->clearCache === "true") {
-        $allCaches = $this->cache->get($this->getCacheKey() . '*');
-        foreach ($allCaches as $k => $v) $this->cache->delete($k);
-        $this->message("[InstagramFeed]: All module caches have been deleted.", Notice::debug);
+        $this->clearCacheNow();
         $this->session->redirect($this->getCurrentUri());
       }
     }
 
     return isset($link) ? $link : '';
+  }
+
+  /*
+   * clear module cache – now!
+   */
+  private function clearCacheNow() {
+      $allCaches = $this->cache->get($this->getCacheKey() . '*');
+      foreach ($allCaches as $k => $v) $this->cache->delete($k);
+      $this->message("[InstagramFeed]: All module caches have been deleted.", Notice::debug);
   }
 
   /**
