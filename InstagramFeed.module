@@ -10,7 +10,7 @@
  *
  *
  * @author Tabea David <info@justonestep.de>
- * @version 0.0.3
+ * @version 0.0.4
  * @copyright Copyright (c) 2015 KF Interactive, www.kf-interactive.com, <info@kf-interactive.com>
  * @see https://github.com/justonestep/processwire-instagramfeed
  * @see http://www.processwire.com
@@ -27,6 +27,7 @@ class InstagramFeed extends WireData implements Module, ConfigurableModule {
   const API_URL_FEED = 'https://api.instagram.com/v1/users/self/media/recent/';
   const API_URL_ACCESS_TOKEN = 'https://api.instagram.com/oauth/access_token/';
   const API_URL_SEARCH = 'https://api.instagram.com/v1/users/search/';
+  const API_URL_SEARCH_TAGS = 'https://api.instagram.com/v1/tags/%s/media/recent/';
 
   /**
    * Retrieves module meta data
@@ -38,9 +39,9 @@ class InstagramFeed extends WireData implements Module, ConfigurableModule {
   public static function getModuleInfo() {
     return array(
       'title' => 'Instagram Feed',
-      'summary' => 'Represents the instagram feed of an user',
-      'version' => 003,
-      'href' => 'https://github.com/justonestep/processwire-instagramfeed',
+      'summary' => 'Represents an instagram feed',
+      'version' => 004,
+      'href' => 'https://github.com/justonestep/processwire-instagramfeed ',
       'singular' => true,
       'autoload' => true,
       'icon' => 'instagram'
@@ -193,12 +194,10 @@ EOD;
    * @return array
    */
   public function getRecentMedia($username = '') {
-    if (!empty($username)) $this->username = $username;
+    if (!$username) $this->username = $username;
     $json = $this->cache->get($this->getCacheKey('recentmedia', $this->username));
 
     if (!$json || $this->cacheExpire === 'never') {
-      $connection = new WireHttp;
-
       $request = array(
         'access_token' => $this->accessToken,
         'count' => $this->imageCount
@@ -206,18 +205,59 @@ EOD;
 
       $userId = $this->getUserIdByUsername($this->username);
       $url = !empty($userId) ? str_replace('self', $userId, self::API_URL_FEED) : self::API_URL_FEED;
-      $data = $connection->getJson($url, true, $request);
 
-      if (!empty($data) && $data['meta']['code'] === 200) {
-        $expire = constant('WireCache::expire' . ucfirst($this->cacheExpire));
-        $json = $data['data'];
-        $this->cache->save($this->getCacheKey('recentmedia', $this->username), $json, $expire);
-      } else {
-        $this->log->save('errors', "[InstagramFeed]: No data was received for user '$username'.");
-      }
+      $jsonResponse = $this->sendRequest($request, $url, $this->username);
+      if ($jsonResponse) $json = $jsonResponse;
     }
 
     return $json;
+  }
+
+  /**
+   * Get a list of recently tagged media
+   *
+   * @param string $tag
+   * @return array
+   */
+  public function getRecentMediaByTag($tag = 'processwire') {
+    $json = $this->cache->get($this->getCacheKey('recentmediabytag', $tag));
+
+    if (!$json || $this->cacheExpire === 'never') {
+      $request = array(
+        'access_token' => $this->accessToken,
+        'count' => $this->imageCount
+      );
+
+      $url = str_replace('%s', $tag, self::API_URL_SEARCH_TAGS);
+      $jsonResponse = $this->sendRequest($request, $url, $tag, 'recentmediabytag');
+      if ($jsonResponse) $json = $jsonResponse;
+    }
+
+    return $json;
+  }
+
+  /**
+   * Send request and cache the result
+   *
+   * @param array $request
+   * @param string $url
+   * @param string $constraint
+   * @param strong $cacheKey
+   * @return json
+   */
+  protected function sendRequest($request, $url, $constraint, $cacheKey = 'recentmedia') {
+    $connection = new WireHttp;
+    $data = $connection->getJson($url, true, $request);
+
+    if (!empty($data) && $data['meta']['code'] === 200) {
+      $expire = constant('WireCache::expire' . ucfirst($this->cacheExpire));
+      $json = $data['data'];
+      $this->cache->save($this->getCacheKey($cacheKey, $constraint), $json, $expire);
+    } else {
+      $this->log->save('errors', "[InstagramFeed]: No data was received for '$tag' ($cacheKey).");
+    }
+
+    return isset($json) ? $json : '';
   }
 
   /*
