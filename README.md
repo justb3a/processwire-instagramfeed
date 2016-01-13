@@ -1,6 +1,6 @@
 # Instagram Feed
 
-Represents the instagram feed of an user.
+Represents the instagram feed of any user or recently tagged media.
 
 
 ## Instructions
@@ -12,11 +12,6 @@ First you have to register your application on Instagram.
 Enter a name, description and (really important) the correct redirect url. You can add more than one. If you want to generate the code and access token to authenticate against instagram from the ProcessWire module setting page, you have to add a url similar as: ``http://page.dev/processwire/module/edit?name=InstagramFeed/``. Just install the module and copy the url inside the address bar.
 
 ![Register your app on Instagram](https://github.com/justonestep/processwire-instagramfeed/blob/master/screens/instagram-register.png)
-
-**Security**
-
-- [x] Disable implicit OAuth
-- [ ] Enforce signed requests
 
 When you've done you'll receive a Client ID and a Client Secret. 
 
@@ -51,17 +46,6 @@ You can specify some more settings:
 
 * **Username**: Instagram username to display content from (default: self)
 * **Image Count**: Count of media to return
-* **Cache Expire**: By default a cache lasts for one day but you can select another lifetime
-	 * 	... **hourly**, **daily**, **weekly**, **monthly**
-	 * 	... **never**, to prevent expiration
-	 * 	... **save**, to expire when any page or template is saved
-	 * by clicking the link below all module caches will be deleted
-
----
-
-**NOTICE**: If you save the module config data, the module cache will be cleared as well.
-
----
 
 ### ... and use it!
 
@@ -70,7 +54,6 @@ For example:
 **PHP**
 
 ```php
-
 <?php $feed = $modules->get('InstagramFeed')->getRecentMedia(); ?>
 
 <div class="instagram>
@@ -119,7 +102,7 @@ For example:
 
 You can output any value explained [here](https://instagram.com/developer/endpoints/users/#get_users_media_recent).
 
-If you want to output another feed, you can pass an username:
+If you want to output another feed, you can pass a username:
 
 * ``$modules->get('InstagramFeed')->getRecentMedia('username');`` 
 
@@ -128,6 +111,25 @@ Priority:
 1. argument passed by
 2. username entered in module settings
 3. default 'self', to get the most recent media published by the owner of the access token
+
+## Available endpoints
+
+### Get the instagram feed of any user
+
+- getRecentMedia($username = 'self')
+
+```php
+<?php $feed = $modules->get('InstagramFeed')->getRecentMedia(); ?>
+```
+
+### Get a list of recently tagged media
+
+- getRecentMediaByTag($tagname)
+
+```php
+<?php $feed = $modules->get('InstagramFeed')->getRecentMediaByTag('processwire'); ?>
+```
+
 
 **Links:**
 
