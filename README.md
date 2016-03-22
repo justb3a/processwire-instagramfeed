@@ -58,7 +58,7 @@ For example:
 
 <div class="instagram>
   <?php foreach ($feed as $media): ?>
-    <?php if ($media['type'] === 'image): ?>
+    <?php if ($media['type'] === 'image'): ?>
       <a href="<?=$media['link']; ?>" class="instagram-item">
         <picture>
           <source media="(min-width: 55rem)" srcset="<?=$media['images']['standard_resolution']['url']; ?>">
