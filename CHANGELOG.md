@@ -1,3 +1,15 @@
+## 1.0.0 (2016-06-03)
+
+∞ [view at Github](https://github.com/justonestep/processwire-instagramfeed/releases/tag/1.0.0)
+
+- add endpoint to receive recent media comments
+
+## 0.0.4 (2016-01-13)
+
+∞ [view at Github](https://github.com/justonestep/processwire-instagramfeed/releases/tag/0.0.4)
+
+- add endpoint to receive tagged media
+
 ## 0.0.3 (2015-10-12)
 
 ∞ [view at Github](https://github.com/justonestep/processwire-instagramfeed/releases/tag/0.0.3)

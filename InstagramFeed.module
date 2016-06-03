@@ -5,13 +5,13 @@
  *
  * See README.md for usage instructions.
  *
- * ProcessWire 2.x
+ * ProcessWire 2.x and 3.x
  * Licensed under GNU/GPL v2, see LICENSE.TXT
  *
  *
  * @author Tabea David <info@justonestep.de>
- * @version 0.0.4
- * @copyright Copyright (c) 2015 KF Interactive, www.kf-interactive.com, <info@kf-interactive.com>
+ * @version 1.0.0
+ * @copyright Copyright (c) 2016 justonestep.de, <info@justonestep.de>
  * @see https://github.com/justonestep/processwire-instagramfeed
  * @see http://www.processwire.com
  */
@@ -28,6 +28,7 @@ class InstagramFeed extends WireData implements Module, ConfigurableModule {
   const API_URL_ACCESS_TOKEN = 'https://api.instagram.com/oauth/access_token/';
   const API_URL_SEARCH = 'https://api.instagram.com/v1/users/search/';
   const API_URL_SEARCH_TAGS = 'https://api.instagram.com/v1/tags/%s/media/recent/';
+  const API_URL_MEDIA_COMMENT = 'https://api.instagram.com/v1/media/%s/comments/';
 
   /**
    * Retrieves module meta data
@@ -40,7 +41,7 @@ class InstagramFeed extends WireData implements Module, ConfigurableModule {
     return array(
       'title' => 'Instagram Feed',
       'summary' => 'Represents an instagram feed',
-      'version' => 004,
+      'version' => 100,
       'href' => 'https://github.com/justonestep/processwire-instagramfeed ',
       'singular' => true,
       'autoload' => true,
@@ -237,6 +238,38 @@ EOD;
   }
 
   /**
+   * Get a list of recent comments on a media object.
+   *
+   * @param array $media
+   * @return array
+   */
+  public function getRecentComments($media = null) {
+    // no media array ? quit
+    if (!$media) return array();
+
+    $mediaId = $media['id'];
+    $commentsCount = $media['comments']['count'];
+
+    // no media ID or no comments ? quit
+    if (!$mediaId || $commentsCount === 0) return array();
+
+    $json = $this->cache->get($this->getCacheKey("mediacomment$mediaId", $mediaId));
+
+    if (!$json || $this->cacheExpire === 'never') {
+      $request = array(
+        'access_token' => $this->accessToken,
+        'scope' => 'public_content'
+      );
+
+      $url = str_replace('%s', $mediaId, self::API_URL_MEDIA_COMMENT);
+      $jsonResponse = $this->sendRequest($request, $url, $mediaId, "mediacomment$mediaId");
+      if ($jsonResponse) $json = $jsonResponse;
+    }
+
+    return $json;
+  }
+
+  /**
    * Send request and cache the result
    *
    * @param array $request
@@ -250,11 +283,17 @@ EOD;
     $data = $connection->getJson($url, true, $request);
 
     if (!empty($data) && $data['meta']['code'] === 200) {
-      $expire = constant('WireCache::expire' . ucfirst($this->cacheExpire));
+      if (constant('WireCache::expire' . ucfirst($this->cacheExpire))) {
+        // PW 2.x compatibility
+        $expire = constant('WireCache::expire' . ucfirst($this->cacheExpire));
+      } else {
+        // PW 3.x compatibility
+        $expire = constant('ProcessWire\WireCache::expire' . ucfirst($this->cacheExpire));
+      }
       $json = $data['data'];
       $this->cache->save($this->getCacheKey($cacheKey, $constraint), $json, $expire);
     } else {
-      $this->log->save('errors', "[InstagramFeed]: No data was received for '$tag' ($cacheKey).");
+      $this->log->save('errors', "[InstagramFeed]: No data was received for '$constraint' ($cacheKey).");
     }
 
     return isset($json) ? $json : '';
