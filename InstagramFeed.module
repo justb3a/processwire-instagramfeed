@@ -226,7 +226,8 @@ EOD;
     if (!$json || $this->cacheExpire === 'never') {
       $request = array(
         'access_token' => $this->accessToken,
-        'count' => $this->imageCount
+        'count' => $this->imageCount,
+        'scope' => 'public_content'
       );
 
       $url = str_replace('%s', $tag, self::API_URL_SEARCH_TAGS);
