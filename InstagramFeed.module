@@ -284,7 +284,7 @@ EOD;
     $data = $connection->getJson($url, true, $request);
 
     if (!empty($data) && $data['meta']['code'] === 200) {
-      if (constant('WireCache::expire' . ucfirst($this->cacheExpire))) {
+      if (defined('WireCache::expire' . ucfirst($this->cacheExpire))) {
         // PW 2.x compatibility
         $expire = constant('WireCache::expire' . ucfirst($this->cacheExpire));
       } else {
