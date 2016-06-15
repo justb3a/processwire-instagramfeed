@@ -126,11 +126,11 @@ $feed = $modules->get('InstagramFeed')->getRecentMedia(); ?>
       </a>
 
       // display comments
-      $comments = $modules->get('InstagramFeed')->getRecentComments($media); ?>
+      <?php $comments = $modules->get('InstagramFeed')->getRecentComments($media); ?>
       <?php if ($comments): ?>
         <ul>
           <?php foreach ($comments as $comment): ?>
-            <li><?=$comment['text']></li>
+            <li><?=$comment['text']?></li>
           <?php endforeach; ?>
         </ul>
       <?php endif; ?>
