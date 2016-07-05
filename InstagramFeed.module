@@ -226,8 +226,7 @@ EOD;
     if (!$json || $this->cacheExpire === 'never') {
       $request = array(
         'access_token' => $this->accessToken,
-        'count' => $this->imageCount,
-        'scope' => 'public_content'
+        'count' => $this->imageCount
       );
 
       $url = str_replace('%s', $tag, self::API_URL_SEARCH_TAGS);
@@ -284,7 +283,7 @@ EOD;
     $data = $connection->getJson($url, true, $request);
 
     if (!empty($data) && $data['meta']['code'] === 200) {
-      if (defined('WireCache::expire' . ucfirst($this->cacheExpire))) {
+      if ((int)substr($this->config->version, 0, 1) < 3 || constant('WireCache::expire' . ucfirst($this->cacheExpire))) {
         // PW 2.x compatibility
         $expire = constant('WireCache::expire' . ucfirst($this->cacheExpire));
       } else {

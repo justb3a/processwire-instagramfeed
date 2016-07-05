@@ -39,6 +39,8 @@ Just click the link again to create a new access token.
 
 ![Generate Access Token](https://github.com/justonestep/processwire-instagramfeed/blob/master/screens/module-generate.png)
 
+**Note:** Since 1. of June 2016 every new app created starts in Sandbox mode (Apps are restricted to 10 users, data is restricted to the 10 users and the 20 most recent media from each of those users). [read more](https://www.instagram.com/developer/sandbox/)
+
 ### More settings..
 
 You can specify some more settings:
@@ -126,11 +128,11 @@ $feed = $modules->get('InstagramFeed')->getRecentMedia(); ?>
       </a>
 
       // display comments
-      <?php $comments = $modules->get('InstagramFeed')->getRecentComments($media); ?>
+      $comments = $modules->get('InstagramFeed')->getRecentComments($media); ?>
       <?php if ($comments): ?>
         <ul>
           <?php foreach ($comments as $comment): ?>
-            <li><?=$comment['text']?></li>
+            <li><?=$comment['text']></li>
           <?php endforeach; ?>
         </ul>
       <?php endif; ?>
@@ -145,3 +147,5 @@ $feed = $modules->get('InstagramFeed')->getRecentMedia(); ?>
 * [oauth authentication](http://codular.com/oauth-authentication-with-instagram)
 * [Authentication](https://instagram.com/developer/authentication/)
 * [Endpoints](https://instagram.com/developer/endpoints/users/)
+* [Get Your Instagram Access Token](http://instagram.pixelunion.net/)
+* [Sandbox Mode](https://www.instagram.com/developer/sandbox/)
