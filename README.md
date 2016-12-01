@@ -55,7 +55,7 @@ For example:
 ```php
 <?php $feed = $modules->get('InstagramFeed')->getRecentMedia(); ?>
 
-<div class="instagram>
+<div class="instagram">
   <?php foreach ($feed as $media): ?>
     <?php if ($media['type'] === 'image'): ?>
       <a href="<?=$media['link']; ?>" class="instagram-item">
