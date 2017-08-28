@@ -195,7 +195,7 @@ EOD;
    * @return array
    */
   public function getRecentMedia($username = '') {
-    if (!$username) $this->username = $username;
+    if ($username) $this->username = $username;
     $json = $this->cache->get($this->getCacheKey('recentmedia', $this->username));
 
     if (!$json || $this->cacheExpire === 'never') {
@@ -379,7 +379,8 @@ EOD;
       $request = array(
         'client_id' => $this->clientId,
         'redirect_uri' => $redirect,
-        'response_type' => 'code'
+        'response_type' => 'code',
+        'scope' => 'public_content'
       );
 
       if ($this->user->isSuperuser()) {
