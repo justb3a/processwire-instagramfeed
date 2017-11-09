@@ -142,6 +142,17 @@ $feed = $modules->get('InstagramFeed')->getRecentMedia(); ?>
 </div>
 ```
 
+### Override the imageCount value
+
+- setImageCount($int)
+
+This is a way of setting the `imageCount` value when initialising the module.
+It might come in handy if ever you want to show different number of images on different pages.
+
+```php
+<?php $feed = $modules->get('InstagramFeed')->setImageCount(2)->getRecentMedia();  ?>
+```
+
 **Links:**
 
 * [oauth authentication](http://codular.com/oauth-authentication-with-instagram)
