@@ -10,7 +10,7 @@
  *
  *
  * @author Tabea David <info@justonestep.de>
- * @version 1.0.1
+ * @version 1.0.2
  * @copyright Copyright (c) 2016 justonestep.de, <info@justonestep.de>
  * @see https://github.com/justonestep/processwire-instagramfeed
  * @see http://www.processwire.com
@@ -41,7 +41,7 @@ class InstagramFeed extends WireData implements Module, ConfigurableModule {
     return array(
       'title' => 'Instagram Feed',
       'summary' => 'Represents an instagram feed',
-      'version' => 101,
+      'version' => 102,
       'href' => 'https://github.com/justonestep/processwire-instagramfeed ',
       'singular' => true,
       'autoload' => true,
@@ -390,6 +390,17 @@ EOD;
     }
 
     return isset($link) ? $link : '';
+  }
+
+  /*
+   * Set Image Count
+   *
+   * @param integer $param
+   * @return $this
+   */
+  public function setImageCount($imageCount = 4) {
+    $this->imageCount = (int)$imageCount;
+    return $this;
   }
 
   /*

@@ -1,3 +1,15 @@
+## 1.0.2 (2017-11-09)
+
+∞ [view at Github](https://github.com/justonestep/processwire-instagramfeed/releases/tag/1.0.2)
+
+- add a way of setting the imageCount value when initialising the module
+
+## 1.0.1 (2016-10-06)
+
+∞ [view at Github](https://github.com/justonestep/processwire-instagramfeed/releases/tag/1.0.1)
+
+- add ProcessWire 3.x compatibility / namespaces
+
 ## 1.0.0 (2016-06-03)
 
 ∞ [view at Github](https://github.com/justonestep/processwire-instagramfeed/releases/tag/1.0.0)
